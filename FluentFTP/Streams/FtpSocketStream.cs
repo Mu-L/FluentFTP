@@ -1160,6 +1160,9 @@ namespace FluentFTP {
 			try {
 				ipads = await GetCachedHostAddressesAsync(host, token);
 			}
+			catch (System.Threading.Tasks.TaskCanceledException) {
+				throw new OperationCanceledException("Cancelled connection attempt to host.");
+			}
 			catch {
 				((IInternalFtpClient)Client).LogStatus(FtpTraceLevel.Verbose, "...error in DNS lookup");
 				Close();
