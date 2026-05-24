@@ -1160,7 +1160,7 @@ namespace FluentFTP {
 			try {
 				ipads = await GetCachedHostAddressesAsync(host, token);
 			}
-			catch (System.Threading.Tasks.TaskCanceledException) {
+			catch (TaskCanceledException) {
 				throw new OperationCanceledException("Cancelled connection attempt to host.");
 			}
 			catch {
