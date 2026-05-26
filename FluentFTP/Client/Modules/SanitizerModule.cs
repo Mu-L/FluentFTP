@@ -1,4 +1,5 @@
 ﻿using FluentFTP.Client.BaseClient;
+using FluentFTP.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,8 @@ namespace FluentFTP.Helpers {
 			if (string.IsNullOrEmpty(path)) {
 				return "/";
 			}
+			var sanitize = client.Config.SanitizeMode != FtpSanitize.Disabled;
+			var exception = client.Config.SanitizeMode == FtpSanitize.Throw;
 
 			// Replace backslashes
 			if (path.IndexOf('\\') >= 0)
@@ -80,19 +83,23 @@ namespace FluentFTP.Helpers {
 				path = path.Trim();
 
 			// Decode URL encoding
-			if ((client == null || client.Config.SanitizeUrlEncoding) && path.IndexOf('%') >= 0)
+			if ((client == null || (sanitize && client.Config.SanitizeUrlEncoding)) && path.IndexOf('%') >= 0) {
+				if (exception) throw new FtpSanitizeException("URL encoded chars", path, "SanitizeUrlEncoding");
 				path = DecodeUrl(path);
+			}
 
 			// Remove control chars and newlines
-			if ((client == null || client.Config.SanitizeControlChars)) {
+			if ((client == null || (sanitize && client.Config.SanitizeControlChars))) {
 				if (ContainsControlChars(path)) {
+					if (exception) throw new FtpSanitizeException("unix commands or newlines", path, "SanitizeControlChars");
 					path = SanitizeControlChars(path);
 				}
 			}
 			else {
 				// Remove only newlines
-				if ((client == null || client.Config.SanitizeMultiline)) {
+				if ((client == null || (sanitize && client.Config.SanitizeMultiline))) {
 					if (ContainsMultiline(path)) {
+						if (exception) throw new FtpSanitizeException("multiline paths", path, "SanitizeMultiline");
 						path = SanitizeMultiline(path);
 					}
 				}
@@ -106,14 +113,19 @@ namespace FluentFTP.Helpers {
 				path = CollapseSlashes(path);
 
 			// Remove unicode spoofing chars
-			if ((client == null || client.Config.SanitizeUnicodeSpoofing) && ContainsUnicodeControl(path))
+			if ((client == null || (sanitize && client.Config.SanitizeUnicodeSpoofing)) && ContainsUnicodeControl(path)) {
+				if (exception) throw new FtpSanitizeException("unicode spoofing", path, "SanitizeUnicodeSpoofing");
 				path = RemoveUnicodeControl(path);
+			}
 
 			// Resolve traversal
-			if ((client == null || client.Config.SanitizeTraversal) && path.IndexOf("..", StringComparison.Ordinal) >= 0)
+			if ((client == null || (sanitize && client.Config.SanitizeTraversal)) && path.IndexOf("..", StringComparison.Ordinal) >= 0) {
+				if (exception) throw new FtpSanitizeException("FTP path traversal", path, "SanitizeTraversal");
 				path = ResolveTraversal(path);
-			else if (path.Length == 0/* || path[0] != '/'*/)
+			}
+			else if (path.Length == 0/* || path[0] != '/'*/) {
 				path = EnsureLeadingSlash(path);
+			}
 
 			// Final trailing slash trim
 			if (path.Length > 1 && path[path.Length - 1] == '/')

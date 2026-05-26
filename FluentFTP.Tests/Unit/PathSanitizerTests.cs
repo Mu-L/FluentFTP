@@ -11,8 +11,13 @@ namespace FluentFTP.Tests.Unit {
 	/// </summary>
 	public class PathSanitizerTests {
 
-		private static BaseFtpClient _defaultClient = new FtpClient();
+		private static BaseFtpClient _defaultClient;
 		private static BaseFtpClient _insecureClient;
+
+		static PathSanitizerTests() {
+			_defaultClient = new FtpClient();
+			_defaultClient.Config.SanitizeMode = FtpSanitize.Rename;
+		}
 
 		private static BaseFtpClient GetInsecureClient() {
 			if (_insecureClient == null) {

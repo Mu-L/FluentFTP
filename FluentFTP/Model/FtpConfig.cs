@@ -588,6 +588,12 @@ namespace FluentFTP {
 		}
 
 		/// <summary>
+		/// [SECURITY] Prevents FTP command-injection attacks by removing characters used for attacks.
+		/// Can be configured to throw exceptions, silently sanitize paths, or to sanitize nothing (most insecure).
+		/// </summary>
+		public FtpSanitize SanitizeMode { get; set; } = FtpSanitize.Throw;
+
+		/// <summary>
 		/// [SECURITY] Prevents FTP command-injection attacks by removing any characters after an ASCII control character in filepaths.
 		/// Disabling this will weaken system security.
 		/// See the "Security" page on FluentFTP wiki for details.
@@ -716,6 +722,7 @@ namespace FluentFTP {
 			write.CustomStream = read.CustomStream;
 			write.CustomStreamConfig = read.CustomStreamConfig;
 			write.SelfConnectMode = read.SelfConnectMode;
+			write.SanitizeMode = read.SanitizeMode;
 			write.SanitizeControlChars = read.SanitizeControlChars;
 			write.SanitizeMultiline = read.SanitizeMultiline;
 			write.SanitizeUnicodeSpoofing = read.SanitizeUnicodeSpoofing;
