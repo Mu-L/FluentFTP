@@ -7,10 +7,10 @@
    - New: `FtpSanitizeException` with properties describing the type of sanitization issue, and recommended fixes.
    - Fix: Prevent FTP credentials in URI from being logged in both `DownloadUriBytes` overloads.
  - **FTP Connection**
-   - Fix: `AsyncFtpClient.Connect` ignores pre-cancelled `CancellationToken`
+   - Fix: `AsyncFtpClient.Connect` ignores pre-cancelled `CancellationToken`.
  - **FTP Protocol**
-   - New: Add a `WriteTimeout` -setting to control timeout for FTP write operations
-   - Fix: `TrackConfigChanges` for FTP stream write operations to update stream config based on changed client config. Config changes like timeouts will be applied before the next read/write operation.
+   - New: Add a `WriteTimeout` setting to control timeout for FTP write operations
+   - Fix: Add `TrackConfigChanges` in FTP stream write operations to update stream config based on changed client config. Config changes like timeouts will be applied before the next read/write operation.
  
 #### 54.1.2
 
