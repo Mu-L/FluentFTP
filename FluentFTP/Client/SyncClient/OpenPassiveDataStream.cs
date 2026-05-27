@@ -34,7 +34,7 @@ namespace FluentFTP {
 
 			for (int a = 0; a <= Config.PassiveMaxAttempts;) {
 
-				if (type is FtpDataConnectionType.EPSV or FtpDataConnectionType.AutoPassive && !Status.EPSVNotSupported) {
+				if (HasFeature(FtpCapability.EPSV) && type is FtpDataConnectionType.EPSV or FtpDataConnectionType.AutoPassive && !Status.EPSVNotSupported) {
 
 					// execute EPSV to try enhanced-passive mode
 					if (!(reply = Execute("EPSV")).Success) {
