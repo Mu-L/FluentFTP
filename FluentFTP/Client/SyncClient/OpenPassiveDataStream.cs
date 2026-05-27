@@ -37,7 +37,6 @@ namespace FluentFTP {
 				if (!Status.EPSVNotSupported && (type is FtpDataConnectionType.EPSV || (HasFeature(FtpCapability.EPSV) && type is FtpDataConnectionType.AutoPassive))) {
 					// execute EPSV to try enhanced-passive mode
 					if (!(reply = Execute("EPSV")).Success) {
-
 						// if we're connected with IPv4 and data channel type is AutoPassive then fallback to IPv4
 						if (reply.Type is FtpResponseType.TransientNegativeCompletion or FtpResponseType.PermanentNegativeCompletion
 							&& type == FtpDataConnectionType.AutoPassive
