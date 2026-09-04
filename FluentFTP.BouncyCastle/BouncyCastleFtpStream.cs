@@ -192,7 +192,10 @@ namespace FluentFTP.BouncyCastle {
 				m_diagnostic = diagnostic;
 			}
 
-			public TlsCredentials? GetClientCredentials(Org.BouncyCastle.Tls.CertificateRequest certificateRequest) => null;
+			public TlsCredentials? GetClientCredentials(Org.BouncyCastle.Tls.CertificateRequest certificateRequest) {
+				_ = certificateRequest;
+				return null;
+			}
 
 			public void NotifyServerCertificate(TlsServerCertificate serverCertificate) {
 				var certificateList = serverCertificate.Certificate.GetCertificateList();

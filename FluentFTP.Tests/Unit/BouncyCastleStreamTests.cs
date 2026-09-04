@@ -49,7 +49,7 @@ namespace FluentFTP.Tests.Unit {
 					new FtpClient(),
 					"localhost",
 					socket,
-					AcceptCertificate,
+					m_acceptCertificate,
 					true,
 					null!,
 					new UnsupportedStreamConfig()));
@@ -64,7 +64,7 @@ namespace FluentFTP.Tests.Unit {
 					new FtpClient(),
 					"localhost",
 					socket,
-					AcceptCertificate,
+					m_acceptCertificate,
 					false,
 					null!,
 					new BouncyCastleFtpConfig()));
@@ -80,7 +80,7 @@ namespace FluentFTP.Tests.Unit {
 					new FtpClient(),
 					"localhost",
 					socket,
-					AcceptCertificate,
+					m_acceptCertificate,
 					false,
 					controlStream,
 					new BouncyCastleFtpConfig()));
@@ -97,7 +97,7 @@ namespace FluentFTP.Tests.Unit {
 					new FtpClient(),
 					"localhost",
 					socket,
-					AcceptCertificate,
+					m_acceptCertificate,
 					true,
 					null!,
 					new BouncyCastleFtpConfig()));
@@ -106,11 +106,8 @@ namespace FluentFTP.Tests.Unit {
 
 		private static Socket NewSocket() => new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		private static bool AcceptCertificate(
-			object sender,
-			System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-			System.Security.Cryptography.X509Certificates.X509Chain chain,
-			string errorMessage) => true;
+		private static readonly CustomRemoteCertificateValidationCallback m_acceptCertificate =
+			(_, _, _, _) => true;
 
 		private sealed class UnsupportedStreamConfig : IFtpStreamConfig {
 		}
